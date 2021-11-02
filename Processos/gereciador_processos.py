@@ -22,7 +22,7 @@ def processos_gerencia(fila_pronto, processos, recursos, memoria, disco):
     threads = {}
     despachante = Despachante()
     while(threading.active_count() > 1):
-        processo = fila_pronto.remove_processo(memoria)
+        processo = fila_pronto.remove_processo()
         if processo:
             if processo.prioridade:
                 if processo.numero_instrucao == 1:

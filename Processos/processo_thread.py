@@ -7,7 +7,7 @@ def processo_executa(processo, recursos, CPU):
         flag_primeira_vez = 1
         for i in range(1, processo.tempo_processador+1):
             if flag_primeira_vez:
-                recursos.requisita_recurso(processo)
+                recursos.aloca_recurso(processo)
             CPU.acquire()
             if flag_primeira_vez:
                 print("\nP"+str(processo.PID)+" STARTED")

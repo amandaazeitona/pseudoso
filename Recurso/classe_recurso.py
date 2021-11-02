@@ -9,7 +9,7 @@ class Recursos:
         self.sata = threading.Semaphore(2)
     
     def aloca_recurso(self, processo):
-        for recurso, requisicao in enumerate(processo.recursos):
+        for recurso,requisicao in enumerate(processo.recursos):
             utilizando = processo.recursos[requisicao]
             if utilizando:
                 if requisicao == 'impressora_codigo':

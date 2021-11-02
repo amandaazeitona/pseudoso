@@ -5,8 +5,10 @@ class Fila:
 
     # para evitar starvation = aging
     def __atualiza_prioridade(self):
-        self.fila_usuario['prioridade1'].extend(self.fila_usuario['prioridade2'])
-        self.fila_usuario['prioridade2'] = self.fila_usuario['prioridade3']
+        prio2to1 = self.fila_usuario['prioridade2']#fila 2 vira prioridade 1
+        prio3to2 = self.fila_usuario['prioridade3']#fila 3 vira prioridade 2
+        self.fila_usuario['prioridade1'].extend(prio2to1)
+        self.fila_usuario['prioridade2'] = prio3to2
         self.fila_usuario['prioridade3'] = []
     
     # insere processo na fila
@@ -29,10 +31,10 @@ class Fila:
         return(1)
 
     # quando um processo é removido da fila (a fila andou) as prioridades são atualizadas
-    def remove_processo(self, memoria):
+    def remove_processo(self):
         if(len(self.fila_nucleo) > 0):
-            processo = self.fila_nucleo.pop(0)
-            self.__atualiza_prioridade()
+            processo = self.fila_nucleo.pop(0)#nao existe prioridade p processo de núcleo
+           
             return(processo)
         elif(len(self.fila_usuario['prioridade1']) > 0):
             processo = self.fila_usuario['prioridade1'].pop(0)
