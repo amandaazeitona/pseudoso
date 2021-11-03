@@ -1,8 +1,9 @@
+# define os atributos dos processos
 class Processo:
     def __init__(self, dados_processo):
         self.tempo_inicializacao = int(dados_processo[0])
         self.prioridade = int(dados_processo[1])
-        self.tempo_processador = int(dados_processo[2])
+        self.quantidade_instrucoes = int(dados_processo[2])
         self.blocos_em_memoria = int(dados_processo[3])
         self.recursos = {}
         self.recursos['cod_impressora'] = int(dados_processo[4])

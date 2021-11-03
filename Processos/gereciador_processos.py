@@ -4,7 +4,9 @@ import time
 from despachante import Despachante
 from Processos.processo_thread import processo_executa
 
-# inicializa processo
+# inicializa processos lidos no processes.txt
+# insere os processos inicializados na fila de pronto
+# cada processo tem o seu tempo de inicialização
 def processos_inicia(processos, fila, memoria):
     processos = sorted(processos, key=operator.attrgetter('tempo_inicializacao'))
     tempo_inicializacao_anterior = 1
@@ -16,8 +18,10 @@ def processos_inicia(processos, fila, memoria):
         else:
             fila.insere_processo(processo, memoria)
 
-# gerencia os processos
-def processos_gerencia(fila_pronto, processos, recursos, memoria, disco):
+# tira o processo da fila de pronto e o executa
+# se for um processo do tipo usuário entra em execução e sai de acordo com as regras até ser finalizado
+# se for um processo do tipo núcleo é executado até o final
+def processos_gerencia(fila_pronto, recursos, memoria, disco):
     CPU = threading.Lock()
     threads = {}
     despachante = Despachante()
@@ -40,4 +44,4 @@ def processos_gerencia(fila_pronto, processos, recursos, memoria, disco):
                 threads['processo.PID'].start()
                 memoria.desaloca_processo_nucleo(processo)
 
-    despachante.sistema_de_arquivos_executa(disco)
+    despachante.sistema_arquivos_executa(disco)

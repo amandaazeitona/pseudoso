@@ -1,3 +1,5 @@
+# define os atributos dos arquivos
+# init função construtora
 class Arquivo:
     def __init__(self, arquivo_dados):
         self.nome = arquivo_dados[0]
@@ -5,6 +7,7 @@ class Arquivo:
         self.tamanho = int(arquivo_dados[2])
 
 
+# define os atributos das operações de arquivos (cria e deleta)
 class ArquivoOperacao:
     def __init__(self, operacao_dados):
         self.PID = int(operacao_dados[0])

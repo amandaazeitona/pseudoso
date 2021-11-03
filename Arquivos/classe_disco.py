@@ -1,15 +1,16 @@
 class Disco:
 
+    # define os atributos do disco (memória secundária onde os arquivos são armazenados)
     def __init__(self, arquivos_lidos):
         self.blocos = [0]*arquivos_lidos['disco_blocos']
         self.arquivos = arquivos_lidos['arquivos']
         self.operacoes = arquivos_lidos['operacoes']
-        self.tempo_processador = {}
+        self.quantidade_instrucoes = {}
         self.usuario_flag = {}
         self.arquivo_dono = {}
         self.__grava_arquivo_inicial()
 
-    # encontra o primeiro espaço que caiba o arquivo recebido = first-fit
+    # encontra o primeiro espaço em branco que caiba o arquivo recebido pela função = first-fit
     def __procura_espaco_vazio(self, arquivo_tamanho):
         espaco_contiguo_vazio = 0
         espaco_vazio = 0
@@ -24,15 +25,15 @@ class Disco:
                         return i+1-arquivo_tamanho
         return (-1)
 
-    # verifica qual o tempo de processador de um processo
-    def __verifica_tempo_processador(self, PID):
-        if self.tempo_processador[str(PID)] > 0:
+    # verifica a quantidade de instruções que o processo possui
+    def __verifica_quantidade_instrucoes(self, PID):
+        if self.quantidade_instrucoes[str(PID)] > 0:
             return(1)
         return(0)
 
-    # serve pra que?
+    # verifica se o processo ainda tem instruções para serem executadas
     def __verifica_processo(self, PID):
-        if str(PID) in self.tempo_processador:
+        if str(PID) in self.quantidade_instrucoes:
             return (1)
         return(0)
 
@@ -42,14 +43,14 @@ class Disco:
             return(1)
         return(0)
 
-    # inicializa disco com arquivos iniciais?
+    # inicializa disco com arquivos iniciais (definidos na especificação do trabalho)
     def __grava_arquivo_inicial(self):
         for arquivo in self.arquivos:
             for i in range(arquivo.inicio, arquivo.inicio+arquivo.tamanho):
                 self.blocos[i] = arquivo.nome
         return 1
 
-    # busca arquivos dentro do disco?
+    # busca arquivo específico dentro do disco
     def __procura_arquivo(self, nome):
         arquivo_tamanho = 0
         primeira_vez = 0
@@ -62,7 +63,7 @@ class Disco:
                 arquivo_tamanho += 1
         return(primeira_vez, arquivo_inicio, arquivo_tamanho)
 
-    # grava qual processo é dono do arquivo recebido
+    # define processo que é dono do arquivo recebido pela função
     def __grava_arquivo_dono(self, PID, nome_arquivo):
         if nome_arquivo in self.arquivo_dono:
             return(0)
@@ -70,14 +71,14 @@ class Disco:
             self.arquivo_dono[nome_arquivo] = PID
             return(1)
 
-    # verifica se o processo que tenta deletar é dono do arquivo
+    # verifica se o processo que tenta deletar o arquivo é o seu dono (regra para processos do tipo usuário)
     def __eh_arquivo_dono(self, PID, nome_arquivo):
         if nome_arquivo in self.arquivo_dono:
             if self.arquivo_dono[nome_arquivo] == str(PID):
                 return(1)
         return(0)
 
-    # operação de inserir arquivo
+    # operação de inserir arquivo no disco
     def __insere(self, operacao):
         offset = self.__procura_espaco_vazio(operacao.tamanho)
         if offset != -1:
@@ -87,7 +88,7 @@ class Disco:
         else:
             return (-1)
 
-    # operação de deletar arquivo
+    # operação de deletar arquivo do disco
     def __deleta(self, operacao):
         arquivo_encontrado, arquivo_inicio, arquivo_tamanho = self.__procura_arquivo(
             operacao.nome)
@@ -98,11 +99,11 @@ class Disco:
             self.blocos[i] = 0
         return(1)
 
-    # ?
+    # executa operação recebida pela função
     def __executa_operacao(self, operacao):
         if self.__verifica_processo(operacao.PID):
-            if self.__verifica_tempo_processador(operacao.PID):
-                self.tempo_processador[str(operacao.PID)] -= 1
+            if self.__verifica_quantidade_instrucoes(operacao.PID):
+                self.quantidade_instrucoes[str(operacao.PID)] -= 1
                 if (not operacao.operacao_codigo and operacao.tamanho):
                     offset = self.__insere(operacao)
                     if not self.__grava_arquivo_dono(operacao.PID, operacao.nome):
@@ -129,9 +130,9 @@ class Disco:
         else:
             return({'status': 'Falha', 'texto': 'O processo não existe!'})
 
-    # ?
-    def executa_operacoes(self, tempo_processador, usuario_flag):
-        self.tempo_processador = tempo_processador
+    # loop que garante a execução de todas as operação definidas no files.txt
+    def executa_operacoes(self, quantidade_instrucoes, usuario_flag):
+        self.quantidade_instrucoes = quantidade_instrucoes
         self.usuario_flag = usuario_flag
         operacao_status = []
         for operacao in self.operacoes:

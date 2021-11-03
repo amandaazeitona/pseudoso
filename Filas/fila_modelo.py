@@ -1,15 +1,20 @@
 class Fila:
+
+    # define atributos da fila de processos
+    # init função construtora
     def __init__(self):
         self.fila_nucleo = []
         self.fila_usuario = {"prioridade1": [], "prioridade2": [], "prioridade3": []}
 
-    # para evitar starvation = aging
+    # para evitar starvation atualizamos a prioridade dos processos
+    # quando o processo fica muito tempo sem ser utilizado a sua prioridade vai aumenta = aging
+    # prioridade = 0 (núcleo); prioridade 1, 2, 3 (usuário); quanto menor o número maior a prioridade;
     def __atualiza_prioridade(self):
         self.fila_usuario['prioridade1'].extend(self.fila_usuario['prioridade2'])
         self.fila_usuario['prioridade2'] = self.fila_usuario['prioridade3']
         self.fila_usuario['prioridade3'] = []
     
-    # insere processo na fila
+    # insere processo na fila de processos
     def insere_processo(self, processo, memoria):
         if((processo.prioridade == 0) and (len(self.fila_nucleo) < 1000)):
             if memoria.aloca_processo_nucleo(processo):
@@ -28,7 +33,8 @@ class Fila:
             return(0)
         return(1)
 
-    # quando um processo é removido da fila (a fila andou) as prioridades são atualizadas
+    # remove processo da fila de processos
+    # quando um processo é removido da fila a prioridade de todos os processos é atualizada
     def remove_processo(self, memoria):
         if(len(self.fila_nucleo) > 0):
             processo = self.fila_nucleo.pop(0)
